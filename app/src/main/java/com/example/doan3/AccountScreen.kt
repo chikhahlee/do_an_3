@@ -1,5 +1,7 @@
 package com.example.doan3
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -232,6 +234,7 @@ fun LoginScreen(onBack: () -> Unit, onGoRegister: () -> Unit = {}, onLoginSucces
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.FROYO)
 @Composable
 fun RegisterScreen(onBack: () -> Unit, onGoLogin: () -> Unit = {}) {
     var username by remember { mutableStateOf("") }
