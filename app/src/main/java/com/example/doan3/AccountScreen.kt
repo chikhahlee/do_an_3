@@ -246,7 +246,6 @@ fun RegisterScreen(onBack: () -> Unit, onGoLogin: () -> Unit = {}) {
     var isLoading by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
 
-    // Kiểm tra định dạng email hợp lệ
     val isEmailValid = remember(email) {
         email.isEmpty() || android.util.Patterns.EMAIL_ADDRESS.matcher(email.trim()).matches()
     }
