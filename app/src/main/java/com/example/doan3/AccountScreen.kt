@@ -456,6 +456,7 @@ fun UserProfileScreen(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.FROYO)
 @Composable
 fun AccountTabScreen(
     modifier: Modifier = Modifier,
