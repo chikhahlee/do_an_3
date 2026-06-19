@@ -57,21 +57,23 @@ fun CartScreen(
     var showSuccess by remember { mutableStateOf(false) }
     var showLogin   by remember { mutableStateOf(false) }
     var showAddressWarning by remember { mutableStateOf(false) }
-    
+
     // Tính tổng tiền
     val total = cartItems.sumOf { parsePrice(it.product.price) * it.quantity }
-
+    // Tìm kiếm thông tin user
     val currentUser = userAccounts.find { it.username == username }
     val currentUserId = currentUser?.firestoreId ?: ""
 
+    // Đặt hàng thành công thì hiển thị thông báo và xóa giỏ hàng
     if (showSuccess) {
-        OrderSuccessDialog { 
+        OrderSuccessDialog {
             cartItems.clear()
             showSuccess = false
-            onBack() 
+            onBack()
         }
     }
 
+    // Thông báo đăng nhập để đặt hàng
     if (showLogin) {
         AlertDialog(onDismissRequest = { showLogin = false }, containerColor = Color.White,
             title = { Text("Yêu cầu đăng nhập", fontWeight = FontWeight.Bold) },
@@ -82,14 +84,15 @@ fun CartScreen(
             dismissButton = { TextButton(onClick = { showLogin = false }) { Text("Để sau") } })
     }
 
+    // Thông báo điền địa chỉ để đặt hàng
     if (showAddressWarning) {
         AlertDialog(onDismissRequest = { showAddressWarning = false }, containerColor = Color.White,
             title = { Text("Thiếu thông tin", fontWeight = FontWeight.Bold) },
             text  = { Text("Vui lòng nhập địa chỉ nhận hàng trước khi đặt hàng.") },
-            confirmButton = { 
+            confirmButton = {
                 Button(onClick = { showAddressWarning = false },
                     colors = ButtonDefaults.buttonColors(containerColor = PrimaryBlack),
-                    shape = RoundedCornerShape(10.dp)) { Text("Đã hiểu") } 
+                    shape = RoundedCornerShape(10.dp)) { Text("Đã hiểu") }
             }
         )
     }
@@ -114,9 +117,9 @@ fun CartScreen(
                                 inner()
                             })
                     }
-                    
+
                     Spacer(Modifier.height(16.dp))
-                    
+
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Column(Modifier.weight(1f)) {
                             Text("Tổng cộng", fontSize = 12.sp, color = Color.Gray)
@@ -162,14 +165,13 @@ fun CartScreen(
                 LazyColumn(contentPadding = PaddingValues(12.dp), verticalArrangement = Arrangement.spacedBy(10.dp), modifier = Modifier.fillMaxSize()) {
                     items(cartItems, key = { "${it.product.id}_${it.size}" }) { item ->
                         CartItemRow(
-                            item = item, 
+                            item = item,
                             onIncrease = {
                                 val idx = cartItems.indexOf(item)
                                 if (idx != -1) {
-                                    // Thay thế phần tử cũ bằng phần tử mới để kích hoạt cập nhật UI tức thì
                                     cartItems[idx] = item.copy(quantity = item.quantity + 1)
                                 }
-                            }, 
+                            },
                             onDecrease = {
                                 val idx = cartItems.indexOf(item)
                                 if (idx != -1) {
