@@ -33,7 +33,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-// ── Admin color palette ───────────────────────────────────────────────────────
 val AdminPurple     = Color(0xFF6C3FC5)
 val AdminPurpleLight= Color(0xFFEDE7F6)
 val AdminBg         = Color(0xFFF8F7FC)
@@ -61,6 +60,8 @@ fun AdminScreen(onLogout: () -> Unit) {
     }
 }
 
+// Màn hình chính Admin
+// Hiển thị thống kê số lượng và danh mục các mục quản lý hệ thống
 @Composable
 fun AdminHomeScreen(
     onLogout: () -> Unit,
@@ -71,6 +72,7 @@ fun AdminHomeScreen(
 ) {
     var showLogoutDialog by remember { mutableStateOf(false) }
 
+    // Hộp thoại xác nhận khi người dùng yêu cầu đăng xuất
     if (showLogoutDialog) {
         AlertDialog(
             onDismissRequest = { showLogoutDialog = false },
@@ -89,6 +91,7 @@ fun AdminHomeScreen(
     Scaffold(
         containerColor = AdminBg,
         bottomBar = {
+            // Thanh điều hướng phía dưới chứa nút đăng xuất tài khoản
             Surface(shadowElevation = 8.dp, color = Color.White) {
                 Row(
                     modifier = Modifier
@@ -109,6 +112,7 @@ fun AdminHomeScreen(
             contentPadding = PaddingValues(20.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
+            // Tiêu đề của hệ thống Admin
             item {
                 Column {
                     Text("HỆ THỐNG ADMIN", fontWeight = FontWeight.ExtraBold,
@@ -118,6 +122,7 @@ fun AdminHomeScreen(
                     HorizontalDivider(color = AdminPurpleLight, thickness = 2.dp)
                 }
             }
+            // Hiển thị số lượng Sản phẩm, Đơn hàng và Người dùng
             item {
                 Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                     AdminStatCard("Sản phẩm", productList.size.toString(),
@@ -131,6 +136,7 @@ fun AdminHomeScreen(
             item {
                 Text("Quản lý", fontWeight = FontWeight.Bold, fontSize = 14.sp, color = Color.Gray)
             }
+
             item { AdminMenuItem("Quản lý Sản phẩm", "Thêm, sửa, xóa sản phẩm",
                 Icons.Filled.Inventory, AdminPurple, onClick = onProducts) }
             item { AdminMenuItem("Quản lý Đơn hàng", "Xem và cập nhật trạng thái",
@@ -143,6 +149,7 @@ fun AdminHomeScreen(
     }
 }
 
+// Giao diện hiển thị thông tin
 @Composable
 fun AdminStatCard(label: String, value: String, icon: ImageVector, color: Color, modifier: Modifier = Modifier) {
     Card(shape = RoundedCornerShape(16.dp), colors = CardDefaults.cardColors(containerColor = AdminCard),
@@ -179,6 +186,8 @@ fun AdminMenuItem(title: String, subtitle: String, icon: ImageVector, color: Col
     }
 }
 
+// Quản lý sản phẩm
+// Hiển thị danh sách sản phẩm, bộ lọc danh mục và chức năng thêm, sửa, xóa
 @Composable
 fun AdminProductsScreen(onBack: () -> Unit) {
     var showAddDialog by remember { mutableStateOf(false) }
@@ -186,9 +195,11 @@ fun AdminProductsScreen(onBack: () -> Unit) {
     var deleteTarget by remember { mutableStateOf<Product?>(null) }
     var filterCat by remember { mutableStateOf("Tất cả") }
 
+    // Xử lý lọc danh sách sản phẩm theo danh mục được chọn
     val filtered = if (filterCat == "Tất cả") productList
     else productList.filter { it.category == filterCat }
 
+    // Thông báo khi chỉnh sửa sản phẩm
     if (showAddDialog || editTarget != null) {
         ProductFormDialog(
             existing = editTarget,
@@ -201,6 +212,7 @@ fun AdminProductsScreen(onBack: () -> Unit) {
         )
     }
 
+    // Thông báo khi xóa sản phẩm
     if (deleteTarget != null) {
         AlertDialog(
             onDismissRequest = { deleteTarget = null },
@@ -227,6 +239,7 @@ fun AdminProductsScreen(onBack: () -> Unit) {
     ) { pad ->
         Column(modifier = Modifier.padding(pad).fillMaxSize()) {
             AdminSubTopBar("Quản lý Sản phẩm", onBack)
+            // Thanh ngang chứa các nút FilterChip để lọc sản phẩm theo loại sản phẩm
             Row(modifier = Modifier.fillMaxWidth().background(Color.White)
                 .padding(horizontal = 12.dp, vertical = 8.dp),
                 horizontalArrangement = Arrangement.spacedBy(6.dp)) {
@@ -243,6 +256,7 @@ fun AdminProductsScreen(onBack: () -> Unit) {
                     Text("Chưa có sản phẩm", color = Color.Gray)
                 }
             } else {
+                // Hiển thị danh sách sản phẩm
                 LazyColumn(contentPadding = PaddingValues(12.dp),
                     verticalArrangement = Arrangement.spacedBy(10.dp),
                     modifier = Modifier.fillMaxSize()) {
@@ -255,6 +269,7 @@ fun AdminProductsScreen(onBack: () -> Unit) {
     }
 }
 
+// Giao diện hiển thị thông tin chi tiết sản pẩm
 @Composable
 fun AdminProductRow(product: Product, onEdit: () -> Unit, onDelete: () -> Unit) {
     Card(shape = RoundedCornerShape(14.dp), colors = CardDefaults.cardColors(containerColor = AdminCard),
@@ -284,6 +299,7 @@ fun AdminProductRow(product: Product, onEdit: () -> Unit, onDelete: () -> Unit) 
                     }
                     Text(product.price, fontSize = 13.sp, fontWeight = FontWeight.Bold, color = AdminPurple)
                 }
+                // Cảnh báo số lượng còn lại
                 Row(modifier = Modifier.padding(top = 4.dp), verticalAlignment = Alignment.CenterVertically) {
                     val (stockColor, stockBg) = when {
                         product.stock == 0  -> AccentRed to Color(0xFFFFEBEE)
@@ -303,6 +319,7 @@ fun AdminProductRow(product: Product, onEdit: () -> Unit, onDelete: () -> Unit) 
     }
 }
 
+// Form nhập hoặc sửa sản phẩm
 @Composable
 fun ProductFormDialog(existing: Product?, onDismiss: () -> Unit, onSave: (Product) -> Unit) {
     var name by remember { mutableStateOf(existing?.name ?: "") }
@@ -318,6 +335,7 @@ fun ProductFormDialog(existing: Product?, onDismiss: () -> Unit, onSave: (Produc
         title = { Text(if (existing == null) "Thêm sản phẩm" else "Sửa sản phẩm", fontWeight = FontWeight.Bold) },
         text = {
             LazyColumn(verticalArrangement = Arrangement.spacedBy(10.dp), modifier = Modifier.fillMaxWidth()) {
+                // Hiển thị xem trước hình ảnh
                 item {
                     if (imageUrl.isNotBlank()) {
                         Box(modifier = Modifier.fillMaxWidth().height(140.dp)
@@ -329,6 +347,7 @@ fun ProductFormDialog(existing: Product?, onDismiss: () -> Unit, onSave: (Produc
                         }
                     }
                 }
+                // Các ô nhập thông tin sản phẩm
                 item {
                     OutlinedTextField(value = name, onValueChange = { name = it },
                         label = { Text("Tên sản phẩm") }, singleLine = true,
@@ -365,6 +384,7 @@ fun ProductFormDialog(existing: Product?, onDismiss: () -> Unit, onSave: (Produc
                         shape = RoundedCornerShape(10.dp),
                         colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = AdminPurple))
                 }
+
                 item {
                     Text("Danh mục:", fontWeight = FontWeight.Medium, fontSize = 13.sp)
                     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -396,6 +416,8 @@ fun ProductFormDialog(existing: Product?, onDismiss: () -> Unit, onSave: (Produc
     )
 }
 
+// Quản lý đơn hàng
+// Hiển thị tất cả danh sách đơn hàng
 @Composable
 fun AdminOrdersScreen(onBack: () -> Unit) {
     var filterStatus by remember { mutableStateOf("Tất cả") }
@@ -427,6 +449,7 @@ fun AdminOrdersScreen(onBack: () -> Unit) {
                     Text("Không có đơn hàng", color = Color.Gray)
                 }
             } else {
+                // Hiển thị danh sách các đơn hàng
                 LazyColumn(contentPadding = PaddingValues(12.dp),
                     verticalArrangement = Arrangement.spacedBy(10.dp), modifier = Modifier.fillMaxSize()) {
                     items(filtered, key = { it.id }) { order ->
@@ -438,6 +461,7 @@ fun AdminOrdersScreen(onBack: () -> Unit) {
     }
 }
 
+// Giao diện hiển thị thông tin đơn hàng
 @Composable
 fun AdminOrderRow(order: Order, onClick: () -> Unit) {
     val (statusColor, statusBg) = when (order.status) {
@@ -473,6 +497,7 @@ fun AdminOrderRow(order: Order, onClick: () -> Unit) {
     }
 }
 
+// Hiển thị thông tin chi tiết bên trong đơn hàng và quản lý thay đổi trạng thái đơn hàng
 @Composable
 fun OrderDetailDialog(order: Order, onDismiss: () -> Unit) {
     val statusOptions = listOf("Chờ xác nhận", "Đã xác nhận", "Đang giao", "Đã nhận hàng", "Trả hàng", "Hoàn thành", "Đã hủy")
@@ -486,6 +511,7 @@ fun OrderDetailDialog(order: Order, onDismiss: () -> Unit) {
                 Row { Icon(Icons.Filled.Person, null, tint = Color.Gray, modifier = Modifier.size(16.dp)); Spacer(Modifier.width(6.dp)); Text(order.username, fontSize = 14.sp) }
                 Row { Icon(Icons.Outlined.LocationOn, null, tint = Color.Gray, modifier = Modifier.size(16.dp)); Spacer(Modifier.width(6.dp)); Text(order.address.ifBlank { "Chưa có địa chỉ" }, fontSize = 13.sp, color = Color.Gray) }
                 HorizontalDivider()
+                // Hiển thị chi tiết tên và số lượng của từng món hàng trong đơn hàng này
                 order.items.forEach { item ->
                     Row(modifier = Modifier.fillMaxWidth()) {
                         Text("• ${item.product.name} ×${item.quantity}", modifier = Modifier.weight(1f), fontSize = 13.sp)
@@ -512,6 +538,7 @@ fun OrderDetailDialog(order: Order, onDismiss: () -> Unit) {
         },
         confirmButton = {
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                // Hiển thị nút "Hủy đơn" nếu đơn hàng chưa ở trạng thái Đã hủy hoặc Hoàn thành
                 if (order.status != "Đã hủy" && order.status != "Hoàn thành") {
                     OutlinedButton(
                         onClick = {
@@ -531,6 +558,8 @@ fun OrderDetailDialog(order: Order, onDismiss: () -> Unit) {
     )
 }
 
+// Quản lý tồn kho
+// Hiển thị danh sách sản phẩm cùng số lượng tồn kho và số lượng đã bán
 @Composable
 fun AdminInventoryScreen(onBack: () -> Unit) {
     var editTarget by remember { mutableStateOf<Product?>(null) }
@@ -607,6 +636,7 @@ fun AdminInventoryScreen(onBack: () -> Unit) {
                                         Text(if (product.stock == 0) "Hết hàng" else "Tồn: ${product.stock}",
                                             fontSize = 11.sp, color = stockColor, fontWeight = FontWeight.Bold)
                                     }
+                                    // Tính toán tổng số lượng sản phẩm này đã được bán ra dựa trên các đơn hàng không bị hủy
                                     val sold = orderList
                                         .filter { it.status != "Đã hủy" }
                                         .sumOf { order -> order.items.filter { it.product.firestoreId == product.firestoreId }.sumOf { it.quantity } }
@@ -629,11 +659,14 @@ fun AdminInventoryScreen(onBack: () -> Unit) {
     }
 }
 
+// Quản lý người dùng
+// Quản lý danh sách người dùng hệ thống
 @Composable
 fun AdminUsersScreen(onBack: () -> Unit, onLogout: () -> Unit) {
     var deleteTarget by remember { mutableStateOf<UserAccount?>(null) }
     var editTarget by remember { mutableStateOf<UserAccount?>(null) }
 
+    // Xác nhận yêu cầu xóa tài khoản người dùng
     if (deleteTarget != null) {
         AlertDialog(
             onDismissRequest = { deleteTarget = null }, containerColor = Color.White,
@@ -686,6 +719,7 @@ fun AdminUsersScreen(onBack: () -> Unit, onLogout: () -> Unit) {
                             IconButton(onClick = { editTarget = user }) {
                                 Icon(Icons.Filled.Edit, "Sửa", tint = AdminBlue, modifier = Modifier.size(20.dp))
                             }
+                            // Ngăn chặn quyền xóa tài khoản đối với những người dùng có vai trò là admin
                             IconButton(onClick = { if (user.role != "admin") deleteTarget = user },
                                 enabled = user.role != "admin") {
                                 Icon(Icons.Filled.Delete, "Xóa",
@@ -700,6 +734,7 @@ fun AdminUsersScreen(onBack: () -> Unit, onLogout: () -> Unit) {
     }
 }
 
+// Form chỉnh sửa tên đăng nhập, email và role
 @Composable
 fun UserEditDialog(user: UserAccount, onDismiss: () -> Unit, onSave: (UserAccount) -> Unit) {
     var username by remember { mutableStateOf(user.username) }

@@ -32,7 +32,6 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 
-// ── Data & utils ──────────────────────────────────────────────────────────────
 data class CartItem(val product: Product, val size: String, val quantity: Int)
 
 fun parsePrice(price: String): Long =
@@ -45,9 +44,7 @@ fun formatPrice(amount: Long): String {
     return sb.reverse().toString() + "đ"
 }
 
-// ═════════════════════════════════════════════════════════════════════════════
 // CART SCREEN
-// ═════════════════════════════════════════════════════════════════════════════
 @Composable
 fun CartScreen(
     cartItems: MutableList<CartItem>,
@@ -61,10 +58,9 @@ fun CartScreen(
     var showLogin   by remember { mutableStateOf(false) }
     var showAddressWarning by remember { mutableStateOf(false) }
     
-    // Tính tổng tiền dựa trên trạng thái hiện tại của danh sách
+    // Tính tổng tiền
     val total = cartItems.sumOf { parsePrice(it.product.price) * it.quantity }
 
-    // Tìm firestoreId của người dùng hiện tại (lấy từ AppState.kt trong cùng package)
     val currentUser = userAccounts.find { it.username == username }
     val currentUserId = currentUser?.firestoreId ?: ""
 
@@ -192,6 +188,7 @@ fun CartScreen(
     }
 }
 
+// Thông báo đặt hàng
 @Composable
 fun OrderSuccessDialog(onDismiss: () -> Unit) {
     AlertDialog(onDismissRequest = onDismiss, containerColor = Color.White,
@@ -201,6 +198,7 @@ fun OrderSuccessDialog(onDismiss: () -> Unit) {
         confirmButton = { Button(onClick = onDismiss, colors = ButtonDefaults.buttonColors(containerColor = PrimaryBlack), shape = RoundedCornerShape(10.dp)) { Text("Tuyệt vời") } })
 }
 
+// Giao diện từng dòng sản phẩm
 @Composable
 fun CartItemRow(item: CartItem, onIncrease: () -> Unit, onDecrease: () -> Unit) {
     Card(shape = RoundedCornerShape(16.dp), colors = CardDefaults.cardColors(containerColor = Color.White), elevation = CardDefaults.cardElevation(2.dp)) {

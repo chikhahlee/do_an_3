@@ -93,7 +93,7 @@ fun InfoCard(label: String, value: String, icon: androidx.compose.ui.graphics.ve
 // ── Đơn hàng của user ─────────────────────────────────────────────────────────
 @Composable
 fun UserOrdersScreen(userId: String, username: String, onBack: () -> Unit) {
-    // Sửa lỗi: Lọc đơn hàng theo userId thực tế thay vì username
+    // Lọc đơn hàng theo userId thực tế thay vì username
     val myOrders = orderList.filter { it.userId == userId }
     var detailOrder by remember { mutableStateOf<Order?>(null) }
 
